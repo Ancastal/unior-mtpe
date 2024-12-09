@@ -7,7 +7,7 @@ from pathlib import Path
 import difflib
 import json
 from pymongo import AsyncMongoClient
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import pytz
 from time_tracker import TimeTracker
 import asyncio
@@ -387,28 +387,33 @@ def main():
                 st.session_state.original_texts[st.session_state.current_segment] = initial_value
 
             if st.session_state.current_segment != st.session_state.active_segment:
-                # Pause previous segment if exists
                 if st.session_state.active_segment is not None:
-                    st.session_state.time_tracker.pause_segment(
-                        st.session_state.active_segment)
-                # Start or resume new segment
-                st.session_state.time_tracker.start_segment(
-                    st.session_state.current_segment)
-                st.session_state.time_tracker.resume_segment(
-                    st.session_state.current_segment)
+                    st.session_state.time_tracker.pause_segment(st.session_state.active_segment)
+                st.session_state.time_tracker.start_segment(st.session_state.current_segment)
+                st.session_state.time_tracker.resume_segment(st.session_state.current_segment)
                 st.session_state.active_segment = st.session_state.current_segment
+
+            # Add periodic idle check
+            if 'last_idle_check' not in st.session_state:
+                st.session_state.last_idle_check = datetime.now()
+                st.session_state.last_stats_update = datetime.now()
+
+            # Check idle time and update stats every 5 seconds
+            current_time = datetime.now()
+            if (current_time - st.session_state.last_idle_check).total_seconds() > 5:
+                st.session_state.time_tracker.check_idle_time(st.session_state.current_segment)
+                st.session_state.last_idle_check = current_time
+                st.rerun()  # Force refresh of the UI to update statistics
 
             edited_text = st.text_area(
                 "Edit Translation:",
                 value=initial_value,
-                key=f"edit_area_{st.session_state.current_segment}"
+                key=f"edit_area_{st.session_state.current_segment}",
+                on_change=lambda: st.session_state.time_tracker.update_activity(st.session_state.current_segment)
             )
 
-            # Start timing when text changes
-            if edited_text != st.session_state.original_texts[st.session_state.current_segment]:
-                if st.session_state.current_segment not in st.session_state.time_tracker.sessions:
-                    st.session_state.time_tracker.start_segment(
-                        st.session_state.current_segment)
+            # Update activity immediately after displaying the segment
+            st.session_state.time_tracker.update_activity(st.session_state.current_segment)
 
     # Navigation buttons with emojis and improved layout
     col1, col2 = st.columns(2)
@@ -420,6 +425,7 @@ def main():
             st.session_state.time_tracker.pause_segment(
                 st.session_state.current_segment)
             st.session_state.current_segment -= 1
+            st.session_state.active_segment = None  # Reset active segment
             st.rerun()
 
     with col2:
@@ -433,6 +439,7 @@ def main():
                 st.session_state.time_tracker.pause_segment(
                     st.session_state.current_segment)
                 st.session_state.current_segment += 1
+                st.session_state.active_segment = None  # Reset active segment
                 st.rerun()
         else:
             if st.button("Next ➡️", key="next_segment"):
@@ -440,13 +447,14 @@ def main():
                 st.session_state.time_tracker.pause_segment(
                     st.session_state.current_segment)
                 st.session_state.current_segment += 1
+                st.session_state.active_segment = None  # Reset active segment
                 st.rerun()
 
     # Show editing statistics in expander
     if st.session_state.current_segment in st.session_state.time_tracker.sessions:
         st.divider()
         with st.expander("📊 Post-Editing Statistics", expanded=True):
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
 
             with col1:
                 edit_time = st.session_state.time_tracker.get_editing_time(
@@ -459,16 +467,27 @@ def main():
                     help="Time spent editing this segment"
                 )
 
+            with col2:
+                if st.session_state.current_segment in st.session_state.time_tracker.sessions:
+                    idle_time = st.session_state.time_tracker.sessions[st.session_state.current_segment].idle_time
+                    idle_minutes = int(idle_time // 60)
+                    idle_seconds = int(idle_time % 60)
+                    st.metric(
+                        "Idle Time",
+                        f"{idle_minutes}m {idle_seconds}s",
+                        help="Time spent idle (>30s without activity)"
+                    )
+
             insertions, deletions = calculate_edit_distance(
                 current_translation, edited_text)
-            with col2:
+            with col3:
                 st.metric(
                     "Insertions",
                     f"{insertions}",
                     help="Number of inserted words"
                 )
 
-            with col3:
+            with col4:
                 st.metric(
                     "Deletions",
                     f"{deletions}",
