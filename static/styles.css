@@ -1,0 +1,361 @@
+/* Import fonts */
+@import url("https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap");
+
+/* Import Roboto from Google Fonts */
+.pt-serif {
+  font-family: "PT Serif", serif !important;
+}
+
+.roboto {
+  font-family: "Roboto", sans-serif !important;
+}
+
+.main-header {
+  font-family: "PT Serif", serif !important;
+}
+
+/* Container styling */
+.card {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #343a40;
+}
+
+.card h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.card ul {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.card li {
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.card p {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.card p strong {
+  font-size: 1.1rem;
+}
+
+.card a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+/* Container styling */
+[data-testid="stContainer"] {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+/* Button styling */
+.stButton button {
+  width: 100%;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.stButton button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Metric containers */
+[data-testid="metric-container"] {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s ease;
+}
+
+[data-testid="metric-container"]:hover {
+  transform: scale(1.02);
+}
+
+/* Tab styling */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px;
+}
+
+.stTabs [data-baseweb="tab"] {
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+/* Dataframe styling */
+.dataframe {
+  border: none !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.dataframe th {
+  background-color: #f1f3f5 !important;
+  padding: 12px !important;
+}
+
+.dataframe td {
+  padding: 10px !important;
+}
+
+/* Divider styling */
+hr {
+  margin: 2rem 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #3b7ea1, transparent);
+}
+
+/* Selectbox styling */
+.stSelectbox {
+  border-radius: 8px;
+}
+
+/* File uploader styling */
+[data-testid="stFileUploader"] {
+  border: 2px dashed #3b7ea1;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* Success/Error message styling */
+.stSuccess,
+.stError {
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* Prompt Preview Styling */
+.prompt-section {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.prompt-header {
+  color: #3b7ea1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title {
+  color: #6f4e7c;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 1rem 0 0.5rem 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid #6f4e7c;
+}
+
+.template-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: "Courier New", monospace;
+  border: 1px solid #e9ecef;
+  margin: 0.5rem 0;
+}
+
+.example-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.example-label {
+  font-weight: 600;
+  color: #495057;
+  margin-right: 0.5rem;
+}
+
+.live-preview-toggle {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+/* Option Menu Styling */
+.nav-link {
+  font-size: 1.2rem !important;
+  padding: 1rem !important;
+  text-align: left !important;
+}
+
+.nav-link.active {
+  background: linear-gradient(45deg, #3b7ea1, #6f4e7c) !important;
+}
+
+.nav-link:hover {
+  background-color: rgba(59, 126, 161, 0.1) !important;
+}
+
+/* Card Styling */
+.card {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #343a40;
+}
+
+/* Metrics Container */
+.metrics-container {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  font-family: "Roboto", sans-serif;
+}
+
+/* Animation Container */
+.lottie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Feature Cards */
+.feature-card {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: 200px;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-card h3 {
+  color: #3b7ea1;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: #495057;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card-divider {
+  background: linear-gradient(45deg, #3b7ea1, #6f4e7c);
+  height: 3px;
+  width: 50px;
+  margin-top: 1rem;
+}
+
+/* Update/Add these card-specific styles */
+[data-testid="stHorizontalBlock"] [data-testid="column"] {
+  transition: transform 0.3s ease;
+  padding: 0.5rem;
+}
+
+[data-testid="stHorizontalBlock"] [data-testid="column"]:hover {
+  transform: translateY(-10px);
+}
+
+/* Add these styles to your existing CSS */
+
+.insertion {
+  background-color: rgba(0, 255, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.deletion {
+  background-color: rgba(255, 0, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.original-text,
+.edited-text {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  margin: 5px 0;
+}
+
+.edited-text {
+  border-left: 3px solid #1f77b4;
+}
+
+/* Add this to your existing CSS */
+.info-card {
+  padding: 1rem 2rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #3b7ea1;
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 2rem;
+  font-family: "PT Serif", serif;
+  color: #343a40;
+}
+
+.info-card p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.info-card strong {
+  color: #3b7ea1;
+}
+
+/* Update existing elements to use Roboto by default */
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+/* Make sure headers use PT Serif */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "PT Serif", serif;
+}
+
+/* Update section titles */
+.section-title {
+  font-family: "PT Serif", serif;
+  font-weight: 700;
+}
