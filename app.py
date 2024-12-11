@@ -18,8 +18,24 @@ st.set_page_config(
     layout="centered"
 )
 
-st.logo("static/unior-nlp.jpg", size="large",
-        link=None, icon_image="static/unior-nlp.jpg")
+st.markdown("""
+<style>
+  div[data-testid="stSidebarHeader"] > img, div[data-testid="collapsedControl"] > img {
+      height: 3rem;
+      width: auto;
+      align-self: center;
+  }
+  
+  div[data-testid="stSidebarHeader"], div[data-testid="stSidebarHeader"] > *,
+  div[data-testid="collapsedControl"], div[data-testid="collapsedControl"] > * {
+      display: flex;
+      align-items: center;
+  }
+</style>
+            """, unsafe_allow_html=True)
+
+st.logo("static/old_unior-nlp.jpg",
+        link=None, icon_image="static/old_unior-nlp.jpg")
 
 #  hide_st_style = """
 #     <style>
@@ -30,6 +46,7 @@ st.logo("static/unior-nlp.jpg", size="large",
 #  """
 #
 # st.markdown(hide_st_style, unsafe_allow_html=True)
+
 
 
 @dataclass
@@ -393,18 +410,6 @@ def main():
                 st.session_state.time_tracker.resume_segment(st.session_state.current_segment)
                 st.session_state.active_segment = st.session_state.current_segment
 
-            # Add periodic idle check
-            if 'last_idle_check' not in st.session_state:
-                st.session_state.last_idle_check = datetime.now()
-                st.session_state.last_stats_update = datetime.now()
-
-            # Check idle time and update stats every 5 seconds
-            current_time = datetime.now()
-            if (current_time - st.session_state.last_idle_check).total_seconds() > 5:
-                st.session_state.time_tracker.check_idle_time(st.session_state.current_segment)
-                st.session_state.last_idle_check = current_time
-                st.rerun()  # Force refresh of the UI to update statistics
-
             edited_text = st.text_area(
                 "Edit Translation:",
                 value=initial_value,
@@ -434,7 +439,7 @@ def main():
             st.session_state.segments) - 1
 
         if is_last_segment:
-            if st.button("🎉 Finish", key="finish_button", type="primary"):
+            if st.button("�� Finish", key="finish_button", type="primary"):
                 save_metrics(current_source, current_translation, edited_text)
                 st.session_state.time_tracker.pause_segment(
                     st.session_state.current_segment)
@@ -443,9 +448,12 @@ def main():
                 st.rerun()
         else:
             if st.button("Next ➡️", key="next_segment"):
+                # Update final stats for current segment
+                st.session_state.time_tracker.update_activity(st.session_state.current_segment)
+                # Save metrics and pause tracking
                 save_metrics(current_source, current_translation, edited_text)
-                st.session_state.time_tracker.pause_segment(
-                    st.session_state.current_segment)
+                st.session_state.time_tracker.pause_segment(st.session_state.current_segment)
+                # Move to next segment
                 st.session_state.current_segment += 1
                 st.session_state.active_segment = None  # Reset active segment
                 st.rerun()
