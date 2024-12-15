@@ -359,3 +359,222 @@ h6 {
   font-family: "PT Serif", serif;
   font-weight: 700;
 }
+
+/* Login/Register styling */
+.welcome-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin: 0px;
+    border: 2px solid #e9ecef;
+    text-align: center;
+}
+
+.welcome-card h3 {
+    color: #1f2937;
+}
+
+.welcome-card p {
+    color: #4b5563;
+    margin-bottom: 0;
+}
+
+/* Form styling */
+[data-testid="stForm"] {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.login-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #6b7280;
+}
+
+.login-footer p {
+    margin: 5px 0;
+}
+
+.login-footer a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* Input field styling */
+.stTextInput input {
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+}
+
+.stTextInput input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+/* Info sidebar styling */
+.info-sidebar {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    height: calc(100% - 20px);
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container for the list */
+.info-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.info-sidebar h4 {
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.info-sidebar li {
+    margin-bottom: 15px;
+    padding-left: 28px;
+    position: relative;
+    color: #4b5563;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.info-sidebar li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.info-note {
+    margin-top: auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    border-left: 3px solid #2563eb;
+}
+
+.info-note p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #6b7280;
+}
+
+/* Form container styling */
+[data-testid="stForm"] {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 10px 0;
+    height: calc(100% - 20px);
+}
+
+/* Make welcome card wider */
+.welcome-card {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    padding: 30px;
+}
+
+/* Auth container using grid layout */
+.auth-container {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 20px;
+    min-height: 400px; /* Set a minimum height */
+}
+
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.info-sidebar {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-sidebar h4 {
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.info-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.info-sidebar li {
+    margin-bottom: 15px;
+    padding-left: 28px;
+    position: relative;
+    color: #4b5563;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.info-sidebar li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.info-note {
+    margin-top: auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    border-left: 3px solid #2563eb;
+}
+
+.info-note p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #6b7280;
+}
+
+/* Make form elements stretch properly */
+[data-testid="stForm"] {
+    height: 100%;
+}
+
+form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
