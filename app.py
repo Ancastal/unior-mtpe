@@ -384,7 +384,7 @@ def main():
         # Footer with additional information
         st.markdown("""
             <div class="login-footer">
-                <p>By using this tool, you agree to our Terms of Service and Privacy Policy</p>
+                <p>By using this tool, you agree to participate to our project.</p>
                 <p>Need help? Contact <a href="mailto:antonio.castaldo@phd.unipi.it">antonio.castaldo@phd.unipi.it</a></p>
             </div>
             """, unsafe_allow_html=True)
