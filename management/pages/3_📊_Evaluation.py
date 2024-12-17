@@ -214,172 +214,98 @@ def main():
     st.title("📊 Translation Evaluation")
     st.markdown("---")
 
-    # Create tabs for different evaluation modes
-    tabs = st.tabs(["📈 Metrics Calculation", "📊 Translation Management"])
+    st.subheader("👤 Select User")
+    users = asyncio.run(get_users())
 
-    # Metrics Calculation Tab
-    with tabs[0]:
+    if not users:
+        st.error("No users found in the database.")
+        return
 
-        # User selection section
-        st.subheader("👤 Select User")
-        users = asyncio.run(get_users())
+    # Create user selection dropdown
+    user_options = [f"{user['name']} {user['surname']}" for user in users]
+    selected_user = st.selectbox(
+        "Select user to evaluate",
+        options=user_options
+    )
 
-        if not users:
-            st.error("No users found in the database.")
-            return
+    if selected_user:
+        # Split selected user into name and surname
+        user_name, user_surname = selected_user.split(" ", 1)
 
-        # Create user selection dropdown
-        user_options = [f"{user['name']} {user['surname']}" for user in users]
-        selected_user = st.selectbox(
-            "Select user to evaluate",
-            options=user_options
+        # File uploader for reference translations
+        st.subheader("📄 Upload Reference Translations")
+        uploaded_file = st.file_uploader(
+            "Upload a text file containing reference translations (one per line)",
+            type=['txt']
         )
 
-        # Split selected user into name and surname
-        selected_name, selected_surname = selected_user.split(' ', 1)
+        if uploaded_file:
+            try:
+                # Process reference file
+                reference_df = process_file(uploaded_file)
+                references = reference_df['reference'].tolist()
 
-        with st.container():
-            st.caption("""
-            Upload your reference translations to calculate quality metrics against post-edited translations.
-            Supported file formats: CSV, Excel, TXT (tab-separated)
-            """)
+                # Get post-edited translations from MongoDB
+                post_edited = asyncio.run(
+                    get_post_edited_translations(user_name, user_surname)
+                )
 
-            # File upload section
-            st.subheader("📄 Reference Translations")
-            reference_file = st.file_uploader(
-                "Upload reference file",
-                type=['csv', 'xlsx', 'xls', 'txt'],
-                key="reference_upload"
-            )
+                if not post_edited:
+                    st.error("No post-edited translations found for this user.")
+                    return
 
-            if reference_file:
-                try:
-                    # Process reference file
-                    ref_df = process_file(reference_file)
+                # Verify lengths match
+                if len(references) != len(post_edited):
+                    st.error(f"Number of references ({len(references)}) does not match "
+                           f"number of post-edited translations ({len(post_edited)})")
+                    return
 
-                    # Get post-edited translations from MongoDB for selected user
-                    post_edited = asyncio.run(get_post_edited_translations(
-                        selected_name, selected_surname))
+                # Select metrics to calculate
+                st.subheader("🔍 Select Metrics")
+                metrics_options = ["BLEU", "chrF", "TER", "METEOR", "BERTScore", "COMET"]
+                selected_metrics = st.multiselect(
+                    "Choose metrics to calculate",
+                    options=metrics_options,
+                    default=["BLEU", "chrF", "TER"]
+                )
 
-                    if not post_edited:
-                        st.error(
-                            f"No post-edited translations found for {selected_user}.")
-                        return
+                if st.button("Calculate Metrics"):
+                    with st.spinner("Calculating metrics..."):
+                        # Calculate selected metrics
+                        results = calculate_additional_metrics(
+                            references, 
+                            post_edited, 
+                            selected_metrics
+                        )
 
-                    # Get references directly from the 'reference' column
-                    references = ref_df['reference'].tolist()
+                        # Display results
+                        st.subheader("📊 Results")
+                        for metric, score in results.items():
+                            st.metric(
+                                label=metric,
+                                value=f"{score:.2f}"
+                            )
 
-                    # Ensure we have matching number of translations
-                    if len(references) != len(post_edited):
-                        st.error(f"Number of reference translations ({len(references)}) does not match "
-                                 f"number of post-edited translations ({len(post_edited)})")
-                        return
+                        # Optional: Display translations side by side
+                        if st.checkbox("Show translations"):
+                            df_display = pd.DataFrame({
+                                'Reference': references,
+                                'Post-edited': post_edited
+                            })
+                            st.dataframe(df_display)
 
-                    # Metric selection using pills
-                    st.subheader("Select Metrics")
-
-                    available_metrics = ["BLEU", "chrF",
-                                         "TER", "METEOR", "BERTScore", "COMET"]
-                    selected_metrics = st.pills(
-                        "Select metrics to calculate",
-                        available_metrics,
-                        selection_mode="multi",
-                        help="You can select multiple metrics to compare translations"
-                    )
-
-                    if st.button("Calculate Metrics", type="primary", use_container_width=True):
-                        with st.spinner("Calculating metrics..."):
-                            results = calculate_additional_metrics(
-                                references, post_edited, selected_metrics)
-
-                            # Display results
-                            st.subheader("📊 Results")
-
-                            # Create columns based on number of selected metrics
-                            cols = st.columns(len(results))
-
-                            # Display metrics in columns
-                            for col, (metric_name, score) in zip(cols, results.items()):
-                                with col:
-                                    help_text = {
-                                        "BLEU": "Higher is better (0-100)",
-                                        "chrF": "Higher is better (0-100)",
-                                        "TER": "Lower is better",
-                                        "METEOR": "Higher is better (0-100)",
-                                        "BERTScore": "Higher is better (0-100)",
-                                        "COMET": "Higher is better (-inf to 100)"
-                                    }
-                                    st.metric(
-                                        metric_name,
-                                        f"{score:.2f}",
-                                        help=help_text.get(metric_name, "")
-                                    )
-
-                except Exception as e:
-                    st.error(f"Error processing data: {str(e)}")
-                    st.info(
-                        "Please make sure your reference file has the correct format.")
-
-    # Results History Tab
-    with tabs[1]:
-        st.header("User Management")
-
-        # Get users list
-        users = asyncio.run(get_users())
-
-        if not users:
-            st.error("No users found in the database.")
-            return
-
-        st.warning(
-            "⚠️ Warning: Deleting user data is permanent and cannot be undone!")
-
-        # Initialize session state for confirmation
-        if 'confirm_delete' not in st.session_state:
-            st.session_state.confirm_delete = None
-
-        # Create a table of users with delete buttons
-        for user in users:
-            with st.container(border=True):
-                col1, col2 = st.columns([3, 1])
-
-                with col1:
-                    st.write(f"**{user['name']} {user['surname']}**")
-
-                with col2:
-                    user_id = f"{user['name']}_{user['surname']}"
-
-                    # If this user is pending confirmation
-                    if st.session_state.confirm_delete == user_id:
-                        if st.button("⚠️ Click to Confirm",
-                                     key=f"confirm_{user_id}",
-                                     type="primary",
-                                     use_container_width=True):
-                            # Perform deletion
-                            if asyncio.run(delete_user_data(user['name'], user['surname'])):
-                                st.success(
-                                    f"Data for {user['name']} {user['surname']} deleted successfully!")
-                                st.session_state.confirm_delete = None
-                                st.rerun()
-                            else:
-                                st.error(
-                                    "Failed to delete user data. Please try again.")
-                                st.session_state.confirm_delete = None
-                    else:
-                        # Show initial delete button
-                        if st.button("🗑️ Delete Data",
-                                     key=f"delete_{user_id}",
-                                     type="secondary",
-                                     use_container_width=True):
-                            st.session_state.confirm_delete = user_id
-                            st.rerun()
-
-    with st.spinner("Loading models... This may take a moment on first run."):
-        # Pre-load commonly used models
-        if torch.cuda.is_available():
-            st.info("GPU detected! Using GPU acceleration for metrics calculation.")
-        download_nltk_data()
+            except Exception as e:
+                st.error(f"Error processing file: {str(e)}")
 
 
 if __name__ == "__main__":
     main()
+
+st.sidebar.title("Navigation")
+if "user" in st.session_state:
+    st.sidebar.page_link("0_🌎_Manager.py", label="Dashboard")
+    st.sidebar.page_link("pages/3_📊_Evaluation.py", label="Evaluation")
+    
+    if st.sidebar.button("Logout"):
+        del st.session_state["user"]
+        st.rerun()
