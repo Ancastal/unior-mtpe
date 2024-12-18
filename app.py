@@ -385,7 +385,7 @@ def main():
         st.markdown("""
             <div class="login-footer">
                 <p>By using this tool, you agree to our Terms of Service and Privacy Policy</p>
-                <p>Need help? Contact <a href="mailto:support@example.com">support@example.com</a></p>
+                <p>Need help? Contact <a href="mailto:antonio.castaldo@phd.unipi.it">antonio.castaldo@phd.unipi.it</a></p>
             </div>
             """, unsafe_allow_html=True)
         
